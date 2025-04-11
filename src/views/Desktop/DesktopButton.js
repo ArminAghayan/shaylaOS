@@ -30,7 +30,7 @@ export default function DesktopButton({
 DesktopButton.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  icon: PropTypes.string.isRequired,
+  icon: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   active: PropTypes.string.isRequired,
   onDoubleClick: PropTypes.func.isRequired,
 };

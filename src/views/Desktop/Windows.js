@@ -4,12 +4,12 @@ import { useRecoilState } from "recoil";
 import WindowFrame, {
   Welcome,
   About,
-  RepoSearch,
-  MostFollowed,
-  Trending,
-  Repo,
-  User,
+  DocumentGallery,
+  PhotoGallery,
 } from "../../windows";
+
+// Import the PacmanGame component
+import PacmanGame from "../../windows/PacmanGame";
 
 import { windowObj } from "../../store";
 import useLocalStorage from "../../hooks/useLocalStorage";
@@ -17,10 +17,10 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 const componentList = {
   welcome: Welcome,
   about: About,
-  repos: RepoSearch,
-  trending: Trending,
-  mostFollowed: MostFollowed,
-  user: User,
+  documentGallery: DocumentGallery,
+  photoGallery: PhotoGallery,
+  // Add the mapping for Pacman
+  pacman: PacmanGame,
 };
 
 export default function Windows() {
@@ -43,7 +43,7 @@ export default function Windows() {
 
   const getContent = (name) => {
     const Comp = componentList[name];
-    if (Comp === undefined) return <Repo name={name} />;
+    if (Comp === undefined) return <DocumentGallery />;
 
     return <Comp />;
   };

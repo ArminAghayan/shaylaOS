@@ -3,14 +3,10 @@ import PropTypes from "prop-types";
 import { Window, WindowContent, WindowHeader, Button } from "react95";
 import Draggable from "react-draggable";
 import { useRecoilValue } from "recoil";
-
 import Welcome from "./Welcome";
 import About from "./About";
-import RepoSearch from "./RepoSearch";
-import MostFollowed from "./MostFollowed";
-import Trending from "./Trending";
-import Repo from "./Repo";
-import User from "./User";
+import DocumentGallery from "./DocumentGallery";
+import PhotoGallery from "./PhotoGallery";
 
 import { focusedElement } from "../store";
 import propTypeChildren from "../utilities/propTypeChildren";
@@ -112,4 +108,4 @@ WindowFrame.propTypes = {
   children: propTypeChildren,
 };
 
-export { Welcome, About, RepoSearch, MostFollowed, Trending, Repo, User };
+export { Welcome, About, DocumentGallery, PhotoGallery };

@@ -33,3 +33,6 @@ For state management I'm using the experimental Recoil library from Facebook. Be
 - [ ] After OAuth is done, spec and add mutations (eg to reply to issues, act on events)
 - [ ] Open developers from Trending Explorer window (clicking a dev currently does nothing)
 - [ ] Option to create desktop shortcuts for repos and users (eg add link to React / favourite repo on the desktop)
+# shaylaOS
+# shaylaOS
+# shaylaOS

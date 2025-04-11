@@ -27,6 +27,10 @@
     width: auto;
     height: auto;
   }
+  &.-documentGallery {
+    height: auto;
+    width: auto;
+  }
   &.-user {
     max-height: 650px;
     width: 850px;
@@ -35,13 +39,18 @@
     max-height: 650px;
     width: 710px;
   }
-  &.-trending,
+  &.-photoGallery,
   &.-mostFollowed {
-    max-height: 605px;
+    height: auto;
+    width: auto;
   }
   &.-repositoryDetails {
-    max-height: 600px;
-    width: 800px;
+    height: auto;
+    width: auto;
+  }
+  &.-pacman {
+    height: auto;
+    width: auto;
   }
 }
 .windowHeader.-inactive {

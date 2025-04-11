@@ -2,41 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link
-      rel="apple-touch-icon"
-      sizes="60x60"
-      href="%PUBLIC_URL%/favicon/apple-touch-icon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="%PUBLIC_URL%/favicon/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="%PUBLIC_URL%/favicon/favicon-16x16.png"
-    />
+    <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/favicon/apple-touch-icon.png" />
     <link rel="manifest" href="%PUBLIC_URL%/favicon/site.webmanifest" />
-    <link
-      rel="mask-icon"
-      href="%PUBLIC_URL%/favicon/safari-pinned-tab.svg"
-      color="#008080"
-    />
-    <meta name="msapplication-TileColor" content="#008080" />
-    <meta name="theme-color" content="#008080" />
+
+    <meta name="msapplication-TileColor" content="#a5f3fc" />
+    <meta name="theme-color" content="#a5f3fc" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Github profile viewer with a Windows 95 theme"
+      content="ShaylaOS for my wife"
     />
-    <title>Github95</title>
+    <title>ShaylaOS</title>
     <link
       href="https://unpkg.com/basscss@8.0.2/css/basscss.min.css"
       rel="stylesheet"
     />
+    <!-- Custom Pacman styling -->
+    <link href="%PUBLIC_URL%/css/custom-pacman.css" rel="stylesheet" />
     <style>
       @font-face {
         font-family: "Windows 95";
@@ -114,7 +99,7 @@
       }
       #root {
         position: relative;
-        background-color: #008080;
+        background-color: #a5f3fc;
       }
       main {
         height: calc(100% - 47px);
@@ -151,5 +136,38 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+    <!-- Force Pacman player to use image -->
+    <script>
+      // This script will periodically check for pacman player elements and force them to use our image
+      function enforcePacmanPlayerImage() {
+        // Find all pacman-player elements
+        const players = document.querySelectorAll('.pacman-player');
+        
+        players.forEach(player => {
+          // Force background image
+          player.style.backgroundImage = 'url("/assets/shaylaandme.png")';
+          player.style.backgroundSize = 'contain';
+          player.style.backgroundRepeat = 'no-repeat';
+          player.style.backgroundPosition = 'center';
+          player.style.zIndex = '999';
+          
+          // Make any child SVG elements invisible
+          const svgElements = player.querySelectorAll('svg, path');
+          svgElements.forEach(svg => {
+            svg.style.display = 'none';
+            svg.style.opacity = '0';
+            svg.style.visibility = 'hidden';
+          });
+        });
+        
+        // Check again soon
+        setTimeout(enforcePacmanPlayerImage, 100);
+      }
+      
+      // Start the process after the page loads
+      window.addEventListener('load', function() {
+        enforcePacmanPlayerImage();
+      });
+    </script>
   </body>
 </html>

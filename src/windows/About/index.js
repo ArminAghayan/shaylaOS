@@ -29,110 +29,30 @@ export default function About() {
       </div>
       <div className="scrollable -yOnly aboutWindow__body">
         <div className="aboutWindow__bodyInner">
-          <h1 className="mb2">About Github95</h1>
+          <h1 className="mb2">What is ShaylaOS?</h1>
           <p className="mb2">
-            Welcome to Github95 - where you can browse Github without the
-            distractions of a modern website. Rewind to a time where the
-            experience was simpler, grey, and so pixelated you needed to squint!
+            Welcome to ShaylaOS my Shayla - where we can browse our memories and dates that me and you have shared together my love. I've been working on this for a while now and I'm so excited to share it with you.
           </p>
 
-          <p>Built with these libraries and resources:</p>
-          <ul className="aboutWindow__list">
-            <li>
-              <Anchor href="https://reactjs.org" target="_blank">
-                React
-              </Anchor>
-            </li>
-            <li>
-              <Anchor href="https://recoiljs.org" target="_blank">
-                Recoil
-              </Anchor>
-            </li>
-            <li>
-              <Anchor
-                href="https://github.com/arturbien/React95"
-                target="_blank"
-              >
-                React95 Component Library
-              </Anchor>
-            </li>
-            <li>
-              <Anchor href="https://docs.github.com/en/graphql" target="_blank">
-                Github GraphQL Api
-              </Anchor>
-            </li>
-            <li>
-              <Anchor href="https://docs.github.com/en/rest" target="_blank">
-                Github Rest Api
-              </Anchor>
-            </li>
-            <li>
-              <Anchor
-                href="https://github.com/huchenme/github-trending-api"
-                target="_blank"
-              >
-                (Unofficial) Github Trending Api
-              </Anchor>
-            </li>
-          </ul>
+  
+
           <p className="mb2">
-            As well as{" "}
-            <Anchor
-              href="https://artage.io/en/icon-packs/original-windows-95-icons"
-              target="_blank"
-            >
-              Windows 95 style icons
-            </Anchor>{" "}
-            from Artage.
+            I will be adding more stuff to this as time goes on, so you can go on it whenever you want and see what i've added, so this will be a gift for life.
+          </p>
+          <p className="mb2">
+            So far we have photos, videos, letters, but i gonna add more stuff that i have in mind that I think you will love.
           </p>
 
           <p className="mb2">
-            This project was built just for fun to view repositories and users,
-            and it works best on desktop browsers but will also work on tablets.
-          </p>
-          <p className="mb2">
-            New features will be added from time to time. I plan to add the
-            users profile readme, and also use the Github OAuth api to login so
-            you can login to your Github account, as well as better error
-            handling and performance improvements.
-          </p>
-
-          <p className="mb2">
-            Find out more in the{" "}
-            <button
-              onClick={handleClick}
-              data-name="edwardpaytongithub95"
-              className="aboutWindow__button"
-            >
-              projects repository
-            </button>
-            , clone or fork the code on{" "}
-            <Anchor
-              href="https://github.com/edwardpayton/github95"
-              target="_blank"
-            >
-              Github
-            </Anchor>
-            , and please report any{" "}
-            <Anchor
-              href="https://github.com/edwardpayton/github95/issues"
-              target="_blank"
-            >
-              issues
-            </Anchor>
-            .
-          </p>
-
-          <p className="mb2">
-            Finally, Happy Birthday to Windows 95, first announced on 24th
-            August 1995 - a quarter-century young. Long live Windows 95!
+            Laslty, before you go and see the rest of this beautiful OS (lol), I just want to say that I love you so much my shayla. I'm so grateful to have you in my life and I'm looking forward to spending the rest of my life with you. Happy 3 month anniversary my princess.
           </p>
           <img
-            src={require("../../assets/windows95-announcement.gif").default}
-            alt=""
+            src={require("../../assets/shaylaandme.png")}
+            alt="Shayla and me"
+            style={{ width: "25%", height: "auto" }}
           />
 
-          <p className="mt2">All the best, Edward Payton :)</p>
+          <p className="mt2">Love you so much my love ❤️</p>
         </div>
       </div>
     </section>

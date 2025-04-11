@@ -5,7 +5,6 @@ import StartupSound from "../../components/StartupSound";
 import Taskbar from "../Taskbar";
 import Windows from "./Windows";
 import DesktopButton from "./DesktopButton";
-
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { WINDOW_OBJ } from "../../constants";
 import { windowObj } from "../../store";
@@ -19,11 +18,19 @@ import reducer, {
 import "./styles.scss";
 
 const desktopIcons = (() => {
+  console.log("WINDOW_OBJ keys:", Object.keys(WINDOW_OBJ));
+  console.log("About icon:", WINDOW_OBJ.about.desktopIcon);
+  
   const icons = Object.keys(WINDOW_OBJ)
-    .filter((name) => (WINDOW_OBJ[name].desktopIcon ? name : null))
+    .filter((name) => {
+      console.log(`Checking ${name} icon:`, WINDOW_OBJ[name].desktopIcon);
+      return !!WINDOW_OBJ[name].desktopIcon;
+    })
     .sort(
       (a, b) => WINDOW_OBJ[a].desktopPosition - WINDOW_OBJ[b].desktopPosition
     );
+  
+  console.log("Final desktop icons:", icons);
   return icons;
 })();
 
@@ -95,23 +102,27 @@ export default function Desktop() {
             className="flex flex-column desktop__background"
             onClick={handleDesktopClick}
           >
-            {showIcons &&
-              desktopIcons.map((name) => {
-                const { label, desktopIcon } = WINDOW_OBJ[name];
-                return (
-                  <React.Fragment key={name}>
-                    {desktopIcon.length && (
-                      <DesktopButton
-                        name={name}
-                        label={label}
-                        icon={desktopIcon}
-                        active={active}
-                        onDoubleClick={handleButtonDblClick(name)}
-                      />
-                    )}
-                  </React.Fragment>
-                );
-              })}
+            {showIcons && (
+              <>
+                {desktopIcons.map((name) => {
+                  const { label, desktopIcon } = WINDOW_OBJ[name];
+                  console.log(`Rendering ${name} with icon:`, desktopIcon);
+                  return (
+                    <React.Fragment key={name}>
+                      {desktopIcon && (
+                        <DesktopButton
+                          name={name}
+                          label={label}
+                          icon={desktopIcon}
+                          active={active}
+                          onDoubleClick={handleButtonDblClick(name)}
+                        />
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </>
+            )}
           </section>
 
           {showWindows && <Windows />}

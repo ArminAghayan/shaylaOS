@@ -9,11 +9,16 @@ import propTypeChildren from "../../utilities/propTypeChildren";
 
 import "./styles.scss";
 
-export default function ErrorPopup({ header, dismissable, children }) {
+export default function ErrorPopup({ header, dismissable, children, onClose }) {
   const [visible, setVisible] = React.useState(true);
 
   const handleClose = () => {
-    if (dismissable) setVisible(false);
+    if (dismissable) {
+      setVisible(false);
+      if (onClose) {
+        onClose();
+      }
+    }
   };
 
   return (
@@ -71,4 +76,5 @@ ErrorPopup.propTypes = {
   header: PropTypes.string.isRequired,
   dismissable: PropTypes.bool.isRequired,
   children: propTypeChildren,
+  onClose: PropTypes.func,
 };

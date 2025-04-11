@@ -60,26 +60,26 @@ export default function StartMenu() {
           verticalAlign="top"
           className="startMenu__menu"
         >
-          <ListItem onClick={handleListClick("repos")} data-name="repos">
+          <ListItem onClick={handleListClick("photoGallery")} data-name="photoGallery">
             <p className="startMenu__menuItem">
               <img
-                src={`${require("../../assets/search-computer.png")}`}
+                src={`${require("../../assets/folder-closed.png")}`}
                 alt=""
                 width="20"
                 className="pixelated"
               />
-              Repositories
+              Photo Gallery
             </p>
           </ListItem>
-          <ListItem onClick={handleListClick("user")} data-name="user">
+          <ListItem onClick={handleListClick("documentGallery")} data-name="documentGallery">
             <p className="startMenu__menuItem">
               <img
-                src={`${require("../../assets/user.png")}`}
+                src={`${require("../../assets/folder-closed.png")}`}
                 alt=""
                 width="20"
                 className="pixelated"
               />
-              Find Users
+              Document Gallery
             </p>
           </ListItem>
           <ListItem onClick={handleListClick("about")} data-name="about">
@@ -108,11 +108,11 @@ export default function StartMenu() {
         className="mr1 startMenu__triggerButton"
       >
         <img
-          src={require("../../assets/octocat-icon.png").default}
+          src={require("../../assets/shaylaOS.png")}
           alt=""
           className="pixelated startMenu__logo"
         />
-        Github95
+        ShaylaOS
       </Button>
     </div>
   );
