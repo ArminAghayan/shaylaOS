@@ -79,3 +79,20 @@
     min-height: 30px;
   }
 }
+
+.upload-modal {
+  z-index: 100;
+}
+
+.image-viewer {
+  .handle {
+    cursor: move;
+    width: 100%;
+  }
+  
+  img.pixelated {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+  }
+}

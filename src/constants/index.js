@@ -68,12 +68,25 @@ const pacman = {
   visibility: [false, false],
 };
 
+// Add the Our Music configuration
+const ourMusic = {
+  label: "Our Music",
+  header:
+    '<img src="' +
+    folderOpenIcon +
+    '" /> Exploring - Our Music',
+  desktopIcon: folderClosedIcon,
+  desktopPosition: 5, // Adjust position as needed
+  visibility: [false, false],
+};
+
 export const WINDOW_OBJ = {
   welcome,
   about,
   photoGallery,
-  pacman, // Add pacman here
+  pacman,
   documentGallery,
+  ourMusic, // Add ourMusic to WINDOW_OBJ
 };
 
 export const DEFAULT_WINDOW = {
@@ -126,6 +139,39 @@ export const DOCUMENT_TREE = [
           },
         },
         // Add other top-level document folders here if needed
+      ],
+    },
+  },
+];
+
+// Add MUSIC_TREE for the OurMusic component
+export const MUSIC_TREE = [
+  {
+    name: "Music",
+    type: "tree",
+    open: true,
+    object: {
+      entries: [
+        {
+          name: "Rock",
+          type: "blob",
+        },
+        {
+          name: "Pop",
+          type: "blob",
+        },
+        {
+          name: "Jazz",
+          type: "blob",
+        },
+        {
+          name: "Classical",
+          type: "blob",
+        },
+        {
+          name: "Electronic",
+          type: "blob",
+        }
       ],
     },
   },

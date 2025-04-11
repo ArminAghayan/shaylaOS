@@ -1,34 +1,29 @@
 import React from "react";
-import { Bar, Button } from "react95";
+import { Bar, Button, List, ListItem, Divider } from "react95";
 import { useRecoilValue } from "recoil";
 
 import FileTree from "../../components/FileTree";
-import Shortcuts from "./Shortcuts";
 import Icon from "./Icon";
+import UploadModal from "./UploadModal";
+import ImageViewerModal from "./ImageViewerModal";
 
-import { trending } from "../../store";
+import { photoFilesQuery } from "../../store";
 import { TRENDING_TREE } from "../../constants";
 
 import "./styles.scss";
 
-export default function PhotoGallery() {
-  const photos = useRecoilValue(trending);
-  const [shortcuts, setShortcuts] = React.useState({});
+
+
+function PhotoGalleryContent() {
+  const photos = useRecoilValue(photoFilesQuery);
   const [selectedFolder, setSelectedFolder] = React.useState("Photos");
   const [currentPath, setCurrentPath] = React.useState("Photos");
   const [folderContents, setFolderContents] = React.useState([]);
+  const [isUploadModalOpen, setIsUploadModalOpen] = React.useState(false);
+  const [isFileMenuOpen, setIsFileMenuOpen] = React.useState(false);
+  const [selectedImage, setSelectedImage] = React.useState(null);
+  const [isImageViewerOpen, setIsImageViewerOpen] = React.useState(false);
   
-  // Initialize folder contents
-  React.useEffect(() => {
-    setFolderContents(getCurrentFolderContents());
-  }, [currentPath]);
-  
-  React.useEffect(() => {
-    if (selectedFolder && photos && photos[selectedFolder]) {
-      setShortcuts(photos[selectedFolder]);
-    }
-  }, [photos, selectedFolder]);
-
   const handleTreeClick = (folderPath) => {
     if (!folderPath) return;
     
@@ -39,15 +34,11 @@ export default function PhotoGallery() {
     if (pathParts.length >= 1) {
       const folderName = pathParts[pathParts.length - 1];
       setSelectedFolder(folderName);
-      
-      if (folderName && photos && photos[folderName]) {
-        setShortcuts(photos[folderName]);
-      }
     }
   };
 
   // Get the current folder's contents
-  const getCurrentFolderContents = () => {
+  const getCurrentFolderContents = React.useCallback(() => {
     if (!currentPath) return [];
     
     const pathParts = currentPath.split("/");
@@ -76,53 +67,126 @@ export default function PhotoGallery() {
         author: ""
       }));
     }
-    // Month folder - show photos (empty for now)
+    // Month folder - show photos
     else if (pathParts.length === 3) {
-      return [];
+      const year = pathParts[1];
+      const month = pathParts[2];
+      
+      console.log("[PhotoGallery] Checking folder:", currentPath);
+      console.log("[PhotoGallery] Extracted Year:", year, "Type:", typeof year);
+      console.log("[PhotoGallery] Extracted Month:", month, "Type:", typeof month);
+      console.log("[PhotoGallery] Photos data (raw):", photos);
+      
+      if (!photos || !Array.isArray(photos)) return []; // Ensure photos is an array
+
+      // Filter photos for the selected year and month
+      const monthPhotos = photos.filter(
+        (p) => {
+          const yearMatch = p.year && p.year.toString() === year;
+          const monthMatch = p.month && p.month === month;
+          // Log comparison for each photo
+          console.log(`[PhotoGallery] Comparing: Photo Year=${p.year}(${typeof p.year}), Month=${p.month}(${typeof p.month}) with Target Year=${year}, Month=${month}. YearMatch=${yearMatch}, MonthMatch=${monthMatch}`);
+          return yearMatch && monthMatch;
+        }
+      );
+      
+      console.log("[PhotoGallery] Filtered photos for month:", monthPhotos);
+
+      // Map photo data to the format needed by the Icon component
+      return monthPhotos.map((photo) => {
+        // Construct the public URL for the photo - ALWAYS use placeholder
+        // const imageUrl = photo.file_path 
+        //   ? `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${photo.file_path}` 
+        //   : require("../../assets/photo.png"); // Fallback icon
+        const imageUrl = require("../../assets/photo.png");
+
+        return {
+          id: photo.id, // Add id for key prop later if needed
+          name: photo.file_name || "Untitled Photo",
+          type: "photo", // Differentiate from folders
+          avatar: imageUrl,
+          author: photo.uploaded_by || "", // Or handle differently if needed
+        };
+      });
     }
     
     return [];
-  };
+  }, [currentPath, photos]);
 
-  const handleFolderClick = (folder) => {
-    if (!folder || typeof folder !== 'object') return;
-    
-    if (currentPath === "Photos") {
-      handleTreeClick(`Photos/${folder.name}`);
-    } else {
-      const pathParts = currentPath.split("/");
-      if (pathParts.length === 2) {
-        // From year to month
-        handleTreeClick(`${currentPath}/${folder.name}`);
-      }
+  // Initialize folder contents
+  React.useEffect(() => {
+    setFolderContents(getCurrentFolderContents());
+  }, [currentPath, getCurrentFolderContents]);
+
+  const handleItemClick = (item) => {
+    if (!item || typeof item !== 'object') return;
+
+    if (item.type === "folder") {
+        if (currentPath === "Photos") {
+          handleTreeClick(`Photos/${item.name}`);
+        } else {
+          const pathParts = currentPath.split("/");
+          if (pathParts.length === 2) {
+            // From year to month
+            handleTreeClick(`${currentPath}/${item.name}`);
+          }
+        }
+    } else if (item.type === "photo") {
+        // Open the photo in the image viewer
+        setSelectedImage(item);
+        setIsImageViewerOpen(true);
     }
   };
 
   // Get breadcrumb for display
   const getBreadcrumb = () => {
     if (!currentPath) return "Photos";
-    
-    const pathParts = currentPath.split("/");
-    if (pathParts.length === 1) return pathParts[0];
-    if (pathParts.length === 2) return `${pathParts[0]}/${pathParts[1]}`;
-    if (pathParts.length === 3) return `${pathParts[0]}/${pathParts[1]}/${pathParts[2]}`;
-    return currentPath;
+    return currentPath.replace(/\//g, '\\\\');
   };
   
   // Get window title
   const getWindowTitle = () => {
-    return `Exploring - My Photos`;
+    return `Exploring - ${getBreadcrumb()}`;
+  };
+
+  // Placeholder for actual upload logic
+  const handleUpload = (year, month, file) => {
+    console.log(`Uploading ${file.name} to ${month}, ${year}`);
+    // TODO: Implement actual file upload logic (e.g., API call, state update)
+    setIsUploadModalOpen(false); // Close modal after initiating upload
   };
 
   return (
     <>
       <section className="flex flex-column explorerWindow mostFollowedWindow">
         <div className="flex justify-between explorerWindow__header">
-          <div className="flex flex-auto items-center explorerWindow__headerButtons">
+          <div className="flex flex-auto items-center explorerWindow__headerButtons relative">
             <Bar className="explorerWindow__bar" />
-            <Button variant="menu" size="sm">
+            <Button
+              variant="menu"
+              size="sm"
+              onClick={() => setIsFileMenuOpen(!isFileMenuOpen)}
+              active={isFileMenuOpen}
+            >
               File
             </Button>
+            {isFileMenuOpen && (
+              <List
+                style={{
+                  position: 'absolute',
+                  left: '0',
+                  top: '100%',
+                  zIndex: 10
+                }}
+                onClick={() => setIsFileMenuOpen(false)}
+              >
+                <ListItem onClick={() => setIsUploadModalOpen(true)}>
+                  Upload...
+                </ListItem>
+                <Divider />
+                <ListItem disabled>Close</ListItem>
+              </List>
+            )}
             <Button variant="menu" size="sm">
               Edit
             </Button>
@@ -148,12 +212,12 @@ export default function PhotoGallery() {
             width="16"
             height="16"
           />
-          <span>{currentPath}</span>
+          <span>{getWindowTitle()}</span>
         </div>
         <div className="flex trendingWindow__panelHeader">
           <p>All Folders</p>
           <p>
-            Contents of folder '{getBreadcrumb()}'
+            Contents of '{getBreadcrumb()}'
           </p>
         </div>
         <div className="flex flex-auto trendingWindow__panels">
@@ -177,22 +241,49 @@ export default function PhotoGallery() {
                     owner={folder.author || ""}
                     highlighted={false}
                     onSingleClick={() => {}}
-                    onDoubleClick={() => handleFolderClick(folder)}
+                    onDoubleClick={() => handleItemClick(folder)}
                   />
                 )
               ))
             ) : (
-              photos && selectedFolder && photos[selectedFolder] ? (
-                <Shortcuts shortcuts={photos[selectedFolder]} type="photos" />
-              ) : null
+              currentPath.split('/').length === 3 ? (
+                 <p style={{ padding: '10px', color: 'gray' }}>No photos in this month yet. Use File &gt; Upload to add some!</p>
+              ) : (
+                 <p style={{ padding: '10px', color: 'gray' }}>Select a month folder to view photos.</p>
+              )
             )}
           </div>
         </div>
 
         <div className="trendingWindow__footer">
-          <p>{(folderContents && folderContents.length) || (shortcuts ? Object.keys(shortcuts).length : 0)} items</p>
+          <p>{folderContents ? folderContents.length : 0} items</p>
         </div>
       </section>
+
+      {/* Render the upload modal conditionally */}
+      {isUploadModalOpen && (
+        <UploadModal
+          onClose={() => setIsUploadModalOpen(false)}
+          onUpload={handleUpload}
+        />
+      )}
+
+      {/* Render the image viewer modal conditionally */}
+      {isImageViewerOpen && selectedImage && (
+        <ImageViewerModal
+          onClose={() => setIsImageViewerOpen(false)}
+          image={selectedImage}
+        />
+      )}
     </>
+  );
+}
+
+// Wrap the main content component with Suspense
+export default function PhotoGallery() {
+  return (
+    <React.Suspense fallback={<p>Loading photos...</p>}> {/* Simple fallback */}
+      <PhotoGalleryContent />
+    </React.Suspense>
   );
 }

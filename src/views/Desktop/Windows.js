@@ -6,6 +6,7 @@ import WindowFrame, {
   About,
   DocumentGallery,
   PhotoGallery,
+  OurMusic
 } from "../../windows";
 
 // Import the PacmanGame component
@@ -21,9 +22,12 @@ const componentList = {
   photoGallery: PhotoGallery,
   // Add the mapping for Pacman
   pacman: PacmanGame,
+  // Add the mapping for OurMusic
+  ourMusic: OurMusic,
 };
 
-export default function Windows() {
+// Accept onPlayTrack prop
+export default function Windows({ onPlayTrack }) {
   const [currentWindows, setWindows] = useRecoilState(windowObj);
   // eslint-disable-next-line no-unused-vars
   const [welcomeStorage, _] = useLocalStorage("github95_welcome");
@@ -45,6 +49,12 @@ export default function Windows() {
     const Comp = componentList[name];
     if (Comp === undefined) return <DocumentGallery />;
 
+    // Check if the component is OurMusic and pass the prop
+    if (name === "ourMusic") {
+      return <Comp onPlayTrack={onPlayTrack} />;
+    }
+    
+    // Render other components normally
     return <Comp />;
   };
 

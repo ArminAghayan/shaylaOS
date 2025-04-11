@@ -7,6 +7,7 @@ import Welcome from "./Welcome";
 import About from "./About";
 import DocumentGallery from "./DocumentGallery";
 import PhotoGallery from "./PhotoGallery";
+import OurMusic from "./OurMusic";
 
 import { focusedElement } from "../store";
 import propTypeChildren from "../utilities/propTypeChildren";
@@ -108,4 +109,4 @@ WindowFrame.propTypes = {
   children: propTypeChildren,
 };
 
-export { Welcome, About, DocumentGallery, PhotoGallery };
+export { Welcome, About, DocumentGallery, PhotoGallery, OurMusic };

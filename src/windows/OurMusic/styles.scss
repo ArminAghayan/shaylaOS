@@ -1,0 +1,106 @@
+.trendingWindow {
+  &__panelHeader {
+    padding: 4px 0 2px;
+    > p {
+      border: 2px inset #ededed;
+      padding: 0.25rem 0.5rem;
+      width: 25%;
+      &:last-of-type {
+        width: 75%;
+        margin-left: 4px;
+      }
+    }
+  }
+  &__panel {
+    border: 2px inset #ededed;
+    padding: 0.5rem;
+    margin-top: 2px;
+    background-color: #fff;
+    &.-tree {
+      width: 25%;
+    }
+    &.-icons {
+      width: 75%;
+      margin-left: 4px;
+      > pre {
+        white-space: pre-wrap;
+      }
+    }
+  }
+  &__footer {
+    margin-top: 5px;
+    border: 2px inset #ededed;
+    > p {
+      padding: 0.25rem 0.5rem;
+    }
+  }
+}
+
+.trendingIcon {
+  width: 100px;
+  height: 100px;
+  padding: 0.5rem;
+  margin: 5px;
+  text-align: center;
+  background: transparent;
+  outline: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  &.-highlighted {
+    background-color: #000080;
+    
+    .trendingIcon__name {
+      color: white;
+    }
+  }
+
+  &__image {
+    margin-bottom: 5px;
+    display: block;
+    image-rendering: pixelated;
+    width: 48px;
+    height: 48px;
+  }
+
+  &__name {
+    margin: auto;
+    width: 100%;
+    pointer-events: none;
+    font-size: 12px;
+    text-align: center;
+    word-break: break-word;
+    min-height: 80px;
+  }
+}
+
+.team-selector-container {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+// Media player styles
+.music-player-container {
+  position: fixed;
+  z-index: 9999;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  
+  // Makes the player appear in front of other windows
+  &:hover {
+    z-index: 10000;
+  }
+}
+
+// Make sure audio is properly sized
+.win95-media-player {
+  audio {
+    width: 100%;
+    outline: none;
+  }
+} 

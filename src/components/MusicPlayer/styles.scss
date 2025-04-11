@@ -1,0 +1,131 @@
+.win95-music-player {
+  width: 320px;
+  user-select: none;
+  min-width: 300px;
+  max-width: 400px;
+  
+  .player-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    
+    .close-button {
+      margin-right: -2px;
+      margin-top: 0px;
+      font-size: 12px;
+      min-width: 24px;
+      height: 24px;
+      padding: 0;
+      font-weight: bold;
+    }
+  }
+  
+  .player-content {
+    padding: 16px;
+    
+    .now-playing {
+      margin-bottom: 12px;
+      background-color: white;
+      border: inset 2px #a0a0a0;
+      padding: 8px;
+      overflow: hidden;
+      
+      .track-title {
+        font-size: 14px;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      
+      .status-message {
+        font-size: 11px;
+        margin: 4px 0 0;
+        color: #444;
+      }
+      
+      .error-message {
+        font-size: 11px;
+        margin: 4px 0 0;
+        color: #cc0000;
+      }
+    }
+    
+    .time-display {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-family: "MS Sans Serif", "Segoe UI", sans-serif;
+      font-size: 12px;
+    }
+    
+    .progress-container {
+      margin-bottom: 12px;
+      
+      .progress-slider {
+        width: 100%;
+        height: 20px;
+        -webkit-appearance: none;
+        appearance: none;
+        background: #c0c0c0;
+        border: inset 2px #a0a0a0;
+        outline: none;
+        
+        &::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 16px;
+          height: 16px;
+          background: #dfdfdf;
+          border: outset 2px #a0a0a0;
+          cursor: pointer;
+        }
+        
+        &::-moz-range-thumb {
+          width: 16px;
+          height: 16px;
+          background: #dfdfdf;
+          border: outset 2px #a0a0a0;
+          cursor: pointer;
+        }
+        
+        &:disabled {
+          opacity: 0.7;
+          
+          &::-webkit-slider-thumb {
+            cursor: not-allowed;
+          }
+          
+          &::-moz-range-thumb {
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+    
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      
+      button {
+        flex: 1;
+        margin: 0 4px;
+        height: 32px;
+        
+        &:first-child {
+          margin-left: 0;
+        }
+        
+        &:last-child {
+          margin-right: 0;
+        }
+        
+        &:disabled {
+          cursor: not-allowed;
+          color: #888;
+        }
+      }
+    }
+  }
+} 

@@ -3,11 +3,11 @@
   width: 115px; // button width + extra space
   &__slide {
     position: absolute;
-    bottom: 36px;
+    bottom: 41px;
     overflow: hidden;
     max-height: 0;
     &.-isOpen {
-      max-height: 200px;
+      max-height: 350px;
       .startMenu__menu {
         transform: translateY(0);
         transition: 0.15s;

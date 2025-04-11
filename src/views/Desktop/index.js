@@ -1,7 +1,9 @@
 import React from "react";
 import { useRecoilState } from "recoil";
+import Draggable from "react-draggable";
 
 import StartupSound from "../../components/StartupSound";
+import MusicPlayer from "../../components/MusicPlayer";
 import Taskbar from "../Taskbar";
 import Windows from "./Windows";
 import DesktopButton from "./DesktopButton";
@@ -41,6 +43,10 @@ export default function Desktop() {
   // eslint-disable-next-line no-unused-vars
   const [soundStorage, _] = useLocalStorage("github95_noSound");
 
+  // Add state for music player
+  const [playlist, setPlaylist] = React.useState([]);
+  const [showPlayer, setShowPlayer] = React.useState(false);
+
   const [
     { showLoader, showTaskbar, showIcons, showWindows },
     dispatch,
@@ -63,6 +69,40 @@ export default function Desktop() {
     window.setTimeout(() => {
       setWindows({ ...currentWindows, ...updated });
     }, 300);
+  };
+
+  // Add handler to play a track
+  const handlePlayTrack = (trackItem) => {
+     // Basic setup, assuming trackItem structure from OurMusic
+     // Needs getFileUrl logic or similar passed/imported if complex
+     // For now, assuming a simple structure { url: '...', title: '...' }
+     // We might need to adjust this based on how getFileUrl is handled globally
+     console.log("Playing track in Desktop:", trackItem); // Debugging
+     if (trackItem && trackItem.url) {
+       setPlaylist([trackItem]); // Set playlist with the single track
+       setShowPlayer(true);
+     } else {
+       // If we need the authenticated fetch logic from OurMusic's getFileUrl:
+       // We'd need to either move getFileUrl here (requires supabase client)
+       // or pass a function down to OurMusic that can fetch the URL/blob.
+       // For now, log an error if the simple URL isn't present.
+       console.error("Track item does not have a URL:", trackItem);
+       // Example: If trackItem has getAuthContent like before:
+       // trackItem.getAuthContent().then(blobUrl => {
+       //   if (blobUrl) {
+       //     setPlaylist([{ url: blobUrl, title: trackItem.title }]);
+       //     setShowPlayer(true);
+       //   } else {
+       //      console.error("Failed to get authenticated content URL");
+       //   }
+       // });
+     }
+  };
+
+  // Add handler to close the player
+  const handleClosePlayer = () => {
+    setShowPlayer(false);
+    setPlaylist([]); // Clear playlist on close
   };
 
   React.useEffect(() => {
@@ -125,9 +165,16 @@ export default function Desktop() {
             )}
           </section>
 
-          {showWindows && <Windows />}
+          {showWindows && <Windows onPlayTrack={handlePlayTrack} />}
         </section>
       </main>
+      {showPlayer && (
+        <Draggable handle=".player-header">
+          <div className="music-player-container" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+            <MusicPlayer playlist={playlist} onClose={handleClosePlayer} />
+          </div>
+        </Draggable>
+      )}
     </>
   );
 }

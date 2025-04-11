@@ -105,3 +105,9 @@ export const mostFollowed = atom({
   key: "mostFollowed",
   default: [],
 });
+
+// Photo Gallery window
+export const photoFilesAtom = atom({
+  key: 'photoFilesAtom',
+  default: [], // Default to an empty array
+});

@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { Button, List, ListItem, Divider } from "react95";
 
 import { windowObj } from "../../store";
 import useLocalStorage from "../../hooks/useLocalStorage";
+import { useAuth } from "../../context/AuthContext";
 
 import "./styles.scss";
 
@@ -12,6 +13,7 @@ export default function StartMenu() {
   const [currentWindows, setWindows] = useRecoilState(windowObj);
   const [isOpen, setOpen] = React.useState(false);
   const refMenu = React.useRef(undefined);
+  const { signOut } = useAuth();
 
   const toggleMenu = (toggle) => {
     setOpen(toggle);
@@ -21,6 +23,12 @@ export default function StartMenu() {
       document.removeEventListener("mousedown", handleClickOutside);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleButtonClick = () => {
     toggleMenu(!isOpen);
@@ -40,7 +48,7 @@ export default function StartMenu() {
   };
 
   const handleClickOutside = ({ target }) => {
-    if (refMenu.current.contains(target)) return;
+    if (refMenu.current && refMenu.current.contains(target)) return;
     toggleMenu(false);
   };
 
@@ -50,6 +58,12 @@ export default function StartMenu() {
       On: "Off",
     };
     setStorage(storageValue[soundStorage]);
+  };
+
+  const handleShutdown = async () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+    toggleMenu(false);
+    await signOut();
   };
 
   return (
@@ -97,6 +111,18 @@ export default function StartMenu() {
           <ListItem onClick={handleSoundToggle}>
             <p className="startMenu__menuItem -soundItem">
               Startup sound: <span className="badge -grey">{soundStorage}</span>
+            </p>
+          </ListItem>
+          <Divider />
+          <ListItem onClick={handleShutdown}>
+            <p className="startMenu__menuItem -shutdownItem">
+              <img
+                src={`${require("../../assets/shutdown.png")}`}
+                alt=""
+                width="20"
+                className="pixelated"
+              />
+              Shut Down
             </p>
           </ListItem>
         </List>

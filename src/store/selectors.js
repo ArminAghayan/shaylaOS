@@ -1,6 +1,7 @@
 import { selector } from "recoil";
-import { rateLimit, searchStatusOfType } from "./atoms";
+import { rateLimit, searchStatusOfType, photoFilesAtom } from "./atoms";
 import formatDate from "../utilities/formatDate";
+import supabase from "../utilities/supabaseClient";
 import { USER, REPOS } from "../constants";
 
 export const apiLimit = selector({
@@ -70,4 +71,32 @@ export const repoSearchStatus = selector({
     };
     set(searchStatusOfType(REPOS), newValue);
   },
+});
+
+// Selector to fetch photo files data from Supabase
+export const photoFilesQuery = selector({
+  key: 'photoFilesQuery',
+  get: async ({get}) => {
+    const currentPhotos = get(photoFilesAtom); // Get current state if needed, e.g., for caching
+    
+    // TODO: Add caching logic here if desired to avoid refetching constantly
+    
+    console.log('[Recoil] Fetching photo files...');
+    const { data, error } = await supabase
+      .from('photo_files')
+      .select('*')
+      .order('created_at', { ascending: false }); // Fetch all columns, order by creation date
+
+    if (error) {
+      console.error('[Recoil] Error fetching photo files:', error);
+      throw error; // Throw error to let Recoil handle it (e.g., with Suspense or ErrorBoundary)
+    }
+    
+    console.log('[Recoil] Fetched photo files:', data);
+    return data || []; // Return the fetched data or an empty array
+  },
+  // Optional: Add a setter if you need to manually update the atom elsewhere
+  // set: ({set}, newValue) => {
+  //   set(photoFilesAtom, newValue);
+  // }
 });

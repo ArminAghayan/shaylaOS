@@ -1,4 +1,3 @@
-'use strict';
 
 const fs = require('fs');
 const path = require('path');
@@ -459,6 +458,24 @@ module.exports = function (webpackEnv) {
                 // show incorrect code and set breakpoints on the wrong lines.
                 sourceMaps: shouldUseSourceMap,
                 inputSourceMap: shouldUseSourceMap,
+              },
+            },
+            // Process react-pacman specifically since it contains JSX syntax
+            {
+              test: /\.(js|jsx)$/,
+              include: /node_modules\/react-pacman/,
+              loader: require.resolve('babel-loader'),
+              options: {
+                presets: [
+                  require.resolve('@babel/preset-env'),
+                  require.resolve('@babel/preset-react')
+                ],
+                plugins: [
+                  require.resolve('@babel/plugin-syntax-jsx')
+                ],
+                // Enable caching for faster rebuilds
+                cacheDirectory: true,
+                cacheCompression: false,
               },
             },
             // "postcss" loader applies autoprefixer to our CSS.

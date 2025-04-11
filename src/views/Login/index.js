@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Window,
   WindowHeader,
@@ -9,27 +9,53 @@ import {
 import { useRecoilValue } from "recoil";
 
 import ErrorPopup from "../../components/ErrorPopup";
-
+import { useAuth } from "../../context/AuthContext";
 import { apiLimit } from "../../store";
 
 import "./styles.scss";
 
 export default function Login({ onLogin }) {
   const limit = useRecoilValue(apiLimit);
-  const [showError, setShowError] = React.useState(false);
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const { signIn, teamMembers } = useAuth();
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleClick = () => {
+  const handleLogin = async () => {
     if (limit.exceeded) {
       return setShowError(true);
     }
-    if ((username === "Armin" || username === "Jana") && password === "shayla") {
-      onLogin();
-    } else {
-      // Optionally handle incorrect login attempt, e.g., show an error message
-      console.log("Incorrect username or password");
+
+    if (!email || !password) {
+      setErrorMessage("Please enter both email and password");
+      setShowError(true);
+      return;
     }
+
+    try {
+      setLoading(true);
+      const { data, error } = await signIn(email, password);
+      
+      if (error) {
+        setErrorMessage(error.message || "Login failed. Please try again.");
+        setShowError(true);
+      } else {
+        console.log("Login successful. Team memberships:", teamMembers);
+        onLogin();
+      }
+    } catch (error) {
+      setErrorMessage("An unexpected error occurred");
+      setShowError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleErrorClose = () => {
+    setShowError(false);
+    setErrorMessage("");
   };
 
   return (
@@ -39,7 +65,7 @@ export default function Login({ onLogin }) {
         className="flex-column windowFrame__inner login__window"
       >
         <WindowHeader className="flex items-center justify-between handle">
-          <span>Welcome to our computer my shaylala</span>
+          <span>Welcome to our computer</span>
           <Button size={"sm"} square disabled={false} onClick={() => ""}>
             <span
               style={{
@@ -59,21 +85,30 @@ export default function Login({ onLogin }) {
               className="pl1 pr3 pixelated login__image"
             />
             <div>
-              <p className="pb2">Login to my shayla</p>
+              <p className="pb2">Please log in</p>
               <div className="relative">
-                {/* <div className="absolute login__inputOverlay"></div> */}
                 <div className="flex pb1 login__input">
-                  <p>User name:</p>
-                  <TextField value={username} onChange={(e) => setUsername(e.target.value)} />
+                  <p>User:</p>
+                  <TextField 
+                    value={email} 
+                    onChange={(e) => setEmail(e.target.value)} 
+                    placeholder="your@email.com"
+                  />
                 </div>
                 <div className="flex login__input">
                   <p>Password</p>
-                  <TextField type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                  <TextField 
+                    type="password" 
+                    value={password} 
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
                 </div>
               </div>
             </div>
             <div className="pl3 login__button">
-              <Button onClick={handleClick}>Love you</Button>
+              <Button onClick={handleLogin} disabled={loading}>
+                {loading ? "Logging in..." : "Log in"}
+              </Button>
             </div>
           </div>
         </WindowContent>
@@ -81,14 +116,15 @@ export default function Login({ onLogin }) {
 
       {showError && (
         <ErrorPopup
-          header="My shayla youou veve encountered an error"
-          dismissable={false}
+          header="Error"
+          dismissable={true}
+          onDismiss={handleErrorClose}
         >
-          <p className="pb1">
-            Unfortunately you cannot acceso r computerer now because the api rate
-            limit has been exceeded.
+          <p>
+            {limit.exceeded
+              ? `Unfortunately you cannot access the system now because the API rate limit has been exceeded. Please try again after ${limit.resetAt}.`
+              : errorMessage}
           </p>
-          <p>Please try again after {limit.resetAt}.</p>
         </ErrorPopup>
       )}
     </div>

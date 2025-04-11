@@ -1,0 +1,9 @@
+diff --git a/node_modules/win95-media-player/lib/components/ProgressControl.js b/node_modules/win95-media-player/lib/components/ProgressControl.js
+index 4d5692c..ece7f07 100644
+--- a/node_modules/win95-media-player/lib/components/ProgressControl.js
++++ b/node_modules/win95-media-player/lib/components/ProgressControl.js
+@@ -252,4 +252,4 @@ function (_React$PureComponent) {
+   return ProgressControl;
+ }(React.PureComponent);
+ 
+export default playerContextFilter(ProgressControl, ['currentTime', 'duration', 'onSeekComplete']);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { styleReset } from "react95";
@@ -6,6 +6,8 @@ import original from "react95/dist/themes/original";
 
 import Desktop from "./views/Desktop";
 import Login from "./views/Login";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import { TeamProvider } from "./context/TeamContext";
 
 import { menubarButtons, focusedElement } from "./store";
 
@@ -18,7 +20,7 @@ const ResetStyles = createGlobalStyle`
 function AppWrapper() {
   const [focused, setfocused] = useRecoilState(focusedElement);
   const currentButtons = useRecoilValue(menubarButtons);
-  const [showDesktop, setShowDesktop] = React.useState(false);
+  const { user, loading } = useAuth();
 
   const handleClick = React.useCallback(
     (e) => {
@@ -32,23 +34,46 @@ function AppWrapper() {
     [focused, setfocused, currentButtons]
   );
 
-  const handleLogin = () => {
-    document.addEventListener("click", handleClick);
-    document.addEventListener("touchstart", handleClick);
-    setShowDesktop(true);
-  };
+  useEffect(() => {
+    if (user) {
+      document.addEventListener("click", handleClick);
+      document.addEventListener("touchstart", handleClick);
+      return () => {
+        document.removeEventListener("click", handleClick);
+        document.removeEventListener("touchstart", handleClick);
+      };
+    }
+  }, [user, handleClick]);
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center login">
+      </div>
+    );
+  }
 
-  return <>{showDesktop ? <Desktop /> : <Login onLogin={handleLogin} />}</>;
+  return (
+    <>
+      {user ? (
+        <Desktop />
+      ) : (
+        <Login onLogin={() => {}} />
+      )}
+    </>
+  );
 }
 
 const App = () => {
   return (
     <RecoilRoot>
-      <ResetStyles />
-      <ThemeProvider theme={original}>
-        <AppWrapper />
-      </ThemeProvider>
+      <AuthProvider>
+        <TeamProvider>
+          <ResetStyles />
+          <ThemeProvider theme={original}>
+            <AppWrapper />
+          </ThemeProvider>
+        </TeamProvider>
+      </AuthProvider>
     </RecoilRoot>
   );
 };

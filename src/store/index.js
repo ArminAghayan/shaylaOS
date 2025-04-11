@@ -14,8 +14,9 @@ import {
   repoFiles,
   trending,
   mostFollowed,
+  photoFilesAtom,
 } from "./atoms";
-import { apiLimit, userApiStatus, repoSearchStatus } from "./selectors";
+import { apiLimit, userApiStatus, repoSearchStatus, photoFilesQuery } from "./selectors";
 
 export {
   apiLimit,
@@ -36,4 +37,6 @@ export {
   repoFiles,
   trending,
   mostFollowed,
+  photoFilesAtom,
+  photoFilesQuery,
 };
