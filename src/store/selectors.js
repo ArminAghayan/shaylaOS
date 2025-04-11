@@ -1,5 +1,5 @@
 import { selector } from "recoil";
-import { rateLimit, searchStatusOfType, photoFilesAtom } from "./atoms";
+import { rateLimit, searchStatusOfType } from "./atoms";
 import formatDate from "../utilities/formatDate";
 import supabase from "../utilities/supabaseClient";
 import { USER, REPOS } from "../constants";
@@ -77,7 +77,6 @@ export const repoSearchStatus = selector({
 export const photoFilesQuery = selector({
   key: 'photoFilesQuery',
   get: async ({get}) => {
-    const currentPhotos = get(photoFilesAtom); // Get current state if needed, e.g., for caching
     
     // TODO: Add caching logic here if desired to avoid refetching constantly
     

@@ -16,7 +16,7 @@ import "./styles.scss";
 
 function PhotoGalleryContent() {
   const photos = useRecoilValue(photoFilesQuery);
-  const [selectedFolder, setSelectedFolder] = React.useState("Photos");
+  const [ setSelectedFolder] = React.useState("Photos");
   const [currentPath, setCurrentPath] = React.useState("Photos");
   const [folderContents, setFolderContents] = React.useState([]);
   const [isUploadModalOpen, setIsUploadModalOpen] = React.useState(false);
