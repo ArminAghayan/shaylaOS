@@ -1,0 +1,134 @@
+.win95-image-viewer {
+  width: 500px;
+  height: 450px;
+  user-select: none;
+  min-width: 400px;
+  min-height: 400px;
+  
+  .viewer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    
+    .close-button {
+      margin-right: -2px;
+      margin-top: 0px;
+      font-size: 12px;
+      min-width: 24px;
+      height: 24px;
+      padding: 0;
+      font-weight: bold;
+    }
+  }
+  
+  .viewer-content {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 32px);
+    
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      
+      .zoom-controls {
+        display: flex;
+        align-items: center;
+        
+        button {
+          margin: 0 4px;
+          min-width: 32px;
+          height: 24px;
+          
+          &:first-child {
+            margin-left: 0;
+          }
+          
+          &:disabled {
+            cursor: not-allowed;
+            color: #888;
+          }
+        }
+        
+        .zoom-level {
+          margin: 0 8px;
+          font-family: "MS Sans Serif", "Segoe UI", sans-serif;
+          font-size: 12px;
+        }
+      }
+    }
+    
+    .image-container {
+      flex: 1;
+      overflow: auto;
+      background-color: #c0c0c0;
+      border: inset 2px #a0a0a0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      margin-bottom: 8px;
+      
+      .loading-indicator {
+        position: absolute;
+        background-color: rgba(200, 200, 200, 0.7);
+        padding: 4px 8px;
+        border: solid 1px #000;
+        z-index: 10;
+        font-size: 12px;
+      }
+      
+      .image-display {
+        object-fit: contain;
+        image-rendering: pixelated;
+        max-height: calc(100% - 16px);
+        margin: 8px;
+      }
+    }
+    
+    .image-info {
+      display: none;
+      padding: 2px;
+      max-height: 40px;
+      overflow: auto;
+      
+      .info-panel {
+        background-color: #a0a0a0;
+        border: inset 2px #a0a0a0;
+        padding: 4px;
+        font-size: 12px;
+        max-width: 100%;
+        
+        .info-row {
+          display: flex;
+          margin-bottom: 4px;
+          
+          .info-label {
+            width: 80px;
+            font-weight: bold;
+            flex-shrink: 0;
+          }
+          
+          .info-value {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            max-width: calc(100% - 90px);
+          }
+        }
+        
+        .error-message {
+          color: #cc0000;
+          margin-top: 4px;
+          font-size: 11px;
+          text-align: center;
+        }
+      }
+    }
+  }
+} 

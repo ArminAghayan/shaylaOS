@@ -6,7 +6,8 @@ import WindowFrame, {
   About,
   DocumentGallery,
   PhotoGallery,
-  OurMusic
+  OurMusic,
+  DocumentViewer,
 } from "../../windows";
 
 // Import the PacmanGame component
@@ -24,10 +25,12 @@ const componentList = {
   pacman: PacmanGame,
   // Add the mapping for OurMusic
   ourMusic: OurMusic,
+  // Add the mapping for DocumentViewer
+  documentViewer: DocumentViewer,
 };
 
-// Accept onPlayTrack prop
-export default function Windows({ onPlayTrack }) {
+// Accept onPlayTrack and onViewImage props
+export default function Windows({ onPlayTrack, onViewImage }) {
   const [currentWindows, setWindows] = useRecoilState(windowObj);
   // eslint-disable-next-line no-unused-vars
   const [welcomeStorage, _] = useLocalStorage("github95_welcome");
@@ -52,6 +55,11 @@ export default function Windows({ onPlayTrack }) {
     // Check if the component is OurMusic and pass the prop
     if (name === "ourMusic") {
       return <Comp onPlayTrack={onPlayTrack} />;
+    }
+    
+    // Pass onViewImage to PhotoGallery
+    if (name === "photoGallery") {
+      return <Comp onViewImage={onViewImage} />;
     }
     
     // Render other components normally

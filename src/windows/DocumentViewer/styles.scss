@@ -1,0 +1,15 @@
+.documentViewerWindow {
+  &__body {
+    width: 470px;
+    height: 550px;
+    border: 2px inset #ededed;
+    background-color: #fff;
+    padding: 0.25rem;
+  }
+  &__bodyInner {
+    padding: 1rem;
+    > h1 {
+      line-height: 2;
+    }
+  }
+} 

@@ -1,7 +1,8 @@
 import React from "react";
 import { Bar, Button } from "react95";
-// Remove Recoil dependency if not used for documents
-// import { useRecoilValue } from "recoil";
+// Import Recoil hooks and state
+import { useRecoilState } from "recoil";
+import { windowObj } from "../../store";
 
 // Removed FileTree import
 import Icon from "./Icon";
@@ -18,10 +19,10 @@ import "./styles.scss";
 
 const FAKE_DOCUMENTS_DATA = {
   "Documents": {
-    "Resume.doc": { url: "#", avatar: require("../../assets/wordpad.png"), author: "User" },
-    "Cover Letter.doc": { url: "#", avatar: require("../../assets/wordpad.png"), author: "User" },
-    "Project Proposal.pdf": { url: "#", avatar: require("../../assets/wordpad.png"), author: "User" },
-    "Budget.xlsx": { url: "#", avatar: require("../../assets/wordpad.png"), author: "User" },
+    "3 months.doc": { url: "#", avatar: require("../../assets/wordpad.png"), author: "User" },
+    "poem.doc": { url: "#", avatar: require("../../assets/wordpad.png"), author: "User" },
+    "My letter about me.doc": { url: "#", avatar: require("../../assets/wordpad.png"), author: "User" },
+    "1 month.doc": { url: "#", avatar: require("../../assets/wordpad.png"), author: "User" },
   }
 };
 // --- Fake Data End ---
@@ -30,6 +31,8 @@ const FAKE_DOCUMENTS_DATA = {
 export default function DocumentGallery() {
   const [currentPath, setCurrentPath] = React.useState("Documents");
   const [folderContents, setFolderContents] = React.useState([]);
+  // Get Recoil state setter
+  const [currentWindows, setWindows] = useRecoilState(windowObj);
 
   // Initialize folder contents
   React.useEffect(() => {
@@ -56,7 +59,22 @@ export default function DocumentGallery() {
   const handleItemClick = (item) => { // Renamed from handleFolderClick
     if (!item || typeof item !== 'object') return;
     // Handle clicks on files (e.g., open the file)
-    console.log("Clicked on file:", item.name); // Placeholder action
+    // console.log("Clicked on file:", item.name); // Placeholder action removed
+
+    // Update the global window state to open the document viewer
+    const updated = {
+      documentViewer: {
+        ...currentWindows.documentViewer,
+        label: item.name, // Set label to document name
+        header: `Notepad - ${item.name}`, // Set header dynamically
+        visibility: [true, true],
+        currentDocument: item, // Pass the full item object
+      },
+    };
+
+    window.setTimeout(() => {
+      setWindows({ ...currentWindows, ...updated });
+    }, 300); // Timeout ensures smooth transition
   };
 
   // Get breadcrumb for display - Simplified as there's only one view now
@@ -88,7 +106,7 @@ export default function DocumentGallery() {
           <div className="flex explorerWindow__logo">
             <div className="explorerWindow__logoBg" />
             <img
-              src={`${require("../../assets/win-logo.png")}`}
+              src={`${require("../../assets/shaylaOS.png")}`}
               alt=""
               width="30"
               className="pixelated"

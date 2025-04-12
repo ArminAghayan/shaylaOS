@@ -40,6 +40,8 @@ export default function ErrorPopup({ header, dismissable, children, onClose }) {
                   square
                   disabled={!dismissable}
                   onClick={handleClose}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onTouchStart={(e) => e.stopPropagation()}
                 >
                   <span
                     style={{

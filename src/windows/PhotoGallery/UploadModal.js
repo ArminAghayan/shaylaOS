@@ -108,9 +108,12 @@ export default function UploadModal({ onClose }) {
       const userId = user.id;
 
       // 2. Prepare file details
-      const fileName = `${Date.now()}_${selectedFile.name}`; 
-      // Store file directly in the root of the bucket.
-      const filePath = `${fileName}`; 
+      // Sanitize the original filename to remove spaces and potentially problematic characters
+      const sanitizedOriginalName = selectedFile.name.replace(/[\\s]+/g, '_').replace(/[^\\w.\\-_]/g, '');
+      // Construct the final filename with timestamp and sanitized name
+      const fileName = `${Date.now()}_${sanitizedOriginalName}`;
+      // Store file directly in the root of the bucket using the sanitized name.
+      const filePath = `${fileName}`;
       const bucketName = 'photos'; // *** Confirm this bucket name ***
 
       // 3. Upload to Storage

@@ -367,7 +367,7 @@ export default function OurMusic({ onPlayTrack }) {
           <div className="flex explorerWindow__logo">
             <div className="explorerWindow__logoBg" />
             <img
-              src={`${require("../../assets/win-logo.png")}`}
+              src={`${require("../../assets/shaylaOS.png")}`}
               alt=""
               width="30"
               className="pixelated"

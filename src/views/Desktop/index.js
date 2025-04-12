@@ -4,6 +4,7 @@ import Draggable from "react-draggable";
 
 import StartupSound from "../../components/StartupSound";
 import MusicPlayer from "../../components/MusicPlayer";
+import ImageViewerModal from "../../windows/PhotoGallery/ImageViewerModal";
 import Taskbar from "../Taskbar";
 import Windows from "./Windows";
 import DesktopButton from "./DesktopButton";
@@ -46,6 +47,10 @@ export default function Desktop() {
   // Add state for music player
   const [playlist, setPlaylist] = React.useState([]);
   const [showPlayer, setShowPlayer] = React.useState(false);
+  
+  // Add state for image viewer
+  const [imageToView, setImageToView] = React.useState(null);
+  const [showImageViewer, setShowImageViewer] = React.useState(false);
 
   const [
     { showLoader, showTaskbar, showIcons, showWindows },
@@ -103,6 +108,23 @@ export default function Desktop() {
   const handleClosePlayer = () => {
     setShowPlayer(false);
     setPlaylist([]); // Clear playlist on close
+  };
+
+  // Add handler to view an image
+  const handleViewImage = (image) => {
+    console.log("Viewing image in Desktop:", image);
+    if (image) {
+      setImageToView(image);
+      setShowImageViewer(true);
+    } else {
+      console.error("No image data provided");
+    }
+  };
+  
+  // Add handler to close the image viewer
+  const handleCloseImageViewer = () => {
+    setShowImageViewer(false);
+    setImageToView(null);
   };
 
   React.useEffect(() => {
@@ -165,13 +187,20 @@ export default function Desktop() {
             )}
           </section>
 
-          {showWindows && <Windows onPlayTrack={handlePlayTrack} />}
+          {showWindows && <Windows onPlayTrack={handlePlayTrack} onViewImage={handleViewImage} />}
         </section>
       </main>
       {showPlayer && (
         <Draggable handle=".player-header">
           <div className="music-player-container" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
             <MusicPlayer playlist={playlist} onClose={handleClosePlayer} />
+          </div>
+        </Draggable>
+      )}
+      {showImageViewer && imageToView && (
+        <Draggable handle=".viewer-header">
+          <div className="image-viewer-container" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1000 }}>
+            <ImageViewerModal image={imageToView} onClose={handleCloseImageViewer} />
           </div>
         </Draggable>
       )}

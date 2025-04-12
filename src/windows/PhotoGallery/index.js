@@ -5,24 +5,39 @@ import { useRecoilValue } from "recoil";
 import FileTree from "../../components/FileTree";
 import Icon from "./Icon";
 import UploadModal from "./UploadModal";
-import ImageViewerModal from "./ImageViewerModal";
 
 import { photoFilesQuery } from "../../store";
 import { TRENDING_TREE } from "../../constants";
 
+// Import Supabase client to use in development
+import { createClient } from "@supabase/supabase-js";
+
 import "./styles.scss";
 
+// Test image (a reliable public image for testing)
+import testImage from "../../assets/photo.png";
 
+// Supabase configuration from environment variables
+const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
+const BUCKET_NAME = 'photos'; // The bucket name used in UploadModal
 
-function PhotoGalleryContent() {
+// Initialize Supabase client
+const supabase = SUPABASE_URL && SUPABASE_ANON_KEY
+  ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
+
+console.log("Supabase URL:", SUPABASE_URL);
+console.log("Supabase ANON Key available:", !!SUPABASE_ANON_KEY);
+console.log("Supabase client initialized:", !!supabase);
+
+function PhotoGalleryContent({ onViewImage }) {
   const photos = useRecoilValue(photoFilesQuery);
-  const [ setSelectedFolder] = React.useState("Photos");
+  const [selectedFolder, setSelectedFolder] = React.useState("Photos");
   const [currentPath, setCurrentPath] = React.useState("Photos");
   const [folderContents, setFolderContents] = React.useState([]);
   const [isUploadModalOpen, setIsUploadModalOpen] = React.useState(false);
   const [isFileMenuOpen, setIsFileMenuOpen] = React.useState(false);
-  const [selectedImage, setSelectedImage] = React.useState(null);
-  const [isImageViewerOpen, setIsImageViewerOpen] = React.useState(false);
   
   const handleTreeClick = (folderPath) => {
     if (!folderPath) return;
@@ -94,18 +109,55 @@ function PhotoGalleryContent() {
 
       // Map photo data to the format needed by the Icon component
       return monthPhotos.map((photo) => {
-        // Construct the public URL for the photo - ALWAYS use placeholder
-        // const imageUrl = photo.file_path 
-        //   ? `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${photo.file_path}` 
-        //   : require("../../assets/photo.png"); // Fallback icon
-        const imageUrl = require("../../assets/photo.png");
+        // Check if photo has a real URL to display
+        let imageUrl = testImage; // Always use test image for thumbnails in gallery
+        let actualImageUrl = null;
+        
+        // For the image viewer
+        if (photo.file_path) {
+          try {
+            // Create a public URL for the image in Supabase storage
+            if (supabase) {
+              const { data } = supabase
+                .storage
+                .from(BUCKET_NAME)
+                .getPublicUrl(photo.file_path);
+              
+              if (data && data.publicUrl) {
+                actualImageUrl = data.publicUrl;
+                console.log("Generated Supabase public URL using SDK:", actualImageUrl);
+              } else {
+                // Fallback to direct URL construction
+                actualImageUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${photo.file_path}`;
+                console.log("Fallback to direct URL:", actualImageUrl);
+              }
+            } else {
+              // If Supabase client isn't available, construct URL directly
+              actualImageUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${photo.file_path}`;
+              console.log("No Supabase client, using direct URL:", actualImageUrl);
+            }
+          } catch (error) {
+            console.error("Error generating public URL:", error);
+            actualImageUrl = testImage; // Fallback to test image on error
+          }
+        } else if (photo.url) {
+          actualImageUrl = photo.url;
+          console.log("Using photo.url directly:", actualImageUrl);
+        } else {
+          actualImageUrl = testImage;
+          console.log("No URL available, using test image");
+        }
 
+        console.log("Full photo object:", photo);
+        
         return {
-          id: photo.id, // Add id for key prop later if needed
+          id: photo.id,
           name: photo.file_name || "Untitled Photo",
-          type: "photo", // Differentiate from folders
-          avatar: imageUrl,
-          author: photo.uploaded_by || "", // Or handle differently if needed
+          type: "photo",
+          avatar: imageUrl, // Small image icon 
+          actualImage: actualImageUrl, // Full-size image for viewer
+          author: photo.uploaded_by || "",
+          size: photo.file_size ? `${Math.round(photo.file_size / 1024)} KB` : 'Unknown',
         };
       });
     }
@@ -132,9 +184,12 @@ function PhotoGalleryContent() {
           }
         }
     } else if (item.type === "photo") {
-        // Open the photo in the image viewer
-        setSelectedImage(item);
-        setIsImageViewerOpen(true);
+        // Instead of opening local modal, use the prop function
+        if (onViewImage) {
+          onViewImage(item);
+        } else {
+          console.warn("onViewImage prop not provided to PhotoGallery");
+        }
     }
   };
 
@@ -197,7 +252,7 @@ function PhotoGalleryContent() {
           <div className="flex explorerWindow__logo">
             <div className="explorerWindow__logoBg" />
             <img
-              src={`${require("../../assets/win-logo.png")}`}
+              src={`${require("../../assets/shaylaOS.png")}`}
               alt=""
               width="30"
               className="pixelated"
@@ -267,23 +322,15 @@ function PhotoGalleryContent() {
           onUpload={handleUpload}
         />
       )}
-
-      {/* Render the image viewer modal conditionally */}
-      {isImageViewerOpen && selectedImage && (
-        <ImageViewerModal
-          onClose={() => setIsImageViewerOpen(false)}
-          image={selectedImage}
-        />
-      )}
     </>
   );
 }
 
 // Wrap the main content component with Suspense
-export default function PhotoGallery() {
+export default function PhotoGallery({ onViewImage }) {
   return (
     <React.Suspense fallback={<p>Loading photos...</p>}> {/* Simple fallback */}
-      <PhotoGalleryContent />
+      <PhotoGalleryContent onViewImage={onViewImage} />
     </React.Suspense>
   );
 }

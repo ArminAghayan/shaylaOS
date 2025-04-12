@@ -6,7 +6,7 @@ import folderOpenIcon from "../assets/folder-open.png";
 import wordpadIcon from "../assets/wordpad.png";
 
 // Add Pacman icon import if using a new one
-// import pacmanIcon from '../assets/pacman.png'; // Example
+import pacmanIcon from '../assets/shaylaandme.png'; // Use the new icon
 
 const welcome = {
   label: "Welcome",
@@ -63,7 +63,7 @@ const documentGallery = {
 const pacman = {
   label: "Pacman",
   header: "Pacman Game",
-  desktopIcon: searchComputerIcon, // Placeholder icon
+  desktopIcon: pacmanIcon, // Use the imported icon
   desktopPosition: 3, // Adjust position as needed
   visibility: [false, false],
 };
@@ -80,6 +80,17 @@ const ourMusic = {
   visibility: [false, false],
 };
 
+// Add the DocumentViewer configuration
+const documentViewer = {
+  label: "Document", // Default label
+  header: "Notepad - Document", // Default header
+  desktopIcon: "", // No desktop icon by default
+  desktopPosition: null,
+  visibility: [false, false],
+  // Add a placeholder for the document details
+  currentDocument: null,
+};
+
 export const WINDOW_OBJ = {
   welcome,
   about,
@@ -87,6 +98,7 @@ export const WINDOW_OBJ = {
   pacman,
   documentGallery,
   ourMusic, // Add ourMusic to WINDOW_OBJ
+  documentViewer, // Add documentViewer to WINDOW_OBJ
 };
 
 export const DEFAULT_WINDOW = {
